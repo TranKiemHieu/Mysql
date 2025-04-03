@@ -1,0 +1,16 @@
+GET http://localhost:8080/api/tutorials
+
+###
+GET http://localhost:8080/api/tutorials/32
+
+###
+POST http://localhost:8080/api/tutorials
+
+###
+GET http://localhost:8080/api/tutorials/32
+
+###
+PUT http://localhost:8080/api/tutorials/18
+
+###
+DELETE http://localhost:8080/api/tutorials/32

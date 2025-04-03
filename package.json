@@ -1,0 +1,37 @@
+{
+  "name": "express-typescript-example",
+  "version": "1.0.0",
+  "description": "Rest API using Node.js, TypeScript, Express",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dev": "node ./build/server.js",
+    "start": "tsc && npm run dev"
+  },
+  "keywords": [
+    "nodejs",
+    "typescript",
+    "express",
+    "restapi",
+    "rest",
+    "api",
+    "crud"
+  ],
+  "author": "kiemhieu",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.16",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql2": "^3.14.0",
+    "sequelize": "^6.37.7",
+    "sequelize-typescript": "^2.1.6"
+  }
+}
