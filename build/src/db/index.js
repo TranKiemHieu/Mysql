@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
 const db_config_1 = require("../config/db.config");
 const tutorial_model_1 = __importDefault(require("../models/tutorial.model"));
+const user_model_1 = __importDefault(require("../models/user.model"));
 class Database {
     constructor() {
         this.connectToDatabase();
@@ -33,7 +34,7 @@ class Database {
                     acquire: db_config_1.config.pool.acquire,
                     idle: db_config_1.config.pool.idle
                 },
-                models: [tutorial_model_1.default],
+                models: [tutorial_model_1.default, user_model_1.default],
                 logging: console.log
             });
             //

@@ -1,12 +1,20 @@
 import express, { Application } from "express";
+import cors from 'cors';
 import Server from "./src/index";
 //
 import Database from "./src/db/index";
-const db = new Database();
+import  setupRoutes  from './src/routes';
 
+const db = new Database();
 const app: Application = express();
 const server: Server = new Server(app);
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+new setupRoutes(app);
 
 app
   .listen(PORT, "localhost", function () {
@@ -19,4 +27,3 @@ app
       console.log(err);
     }
   });
-

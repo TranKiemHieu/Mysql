@@ -1,5 +1,6 @@
-import { Router } from "express";
-import TutorialController from "../controllers/tutorial.controller";
+import { Router, Request, Response, NextFunction } from 'express';
+import TutorialController from '../controllers/tutorial.controller';
+import { verifyToken, isAdmin } from '../middleware/authJwt';
 
 class TutorialRoutes {
   public router: Router;
@@ -12,19 +13,17 @@ class TutorialRoutes {
   }
 
   private initializeRoutes() {
-    this.router.post("/", this.wrapAsync(this.controller.create.bind(this.controller)));
-    this.router.get("/published", this.wrapAsync(this.controller.findAllPublished.bind(this.controller)));
-    this.router.get("/:id", this.wrapAsync(this.controller.findOne.bind(this.controller)));
-    this.router.get("/", this.wrapAsync(this.controller.findAll.bind(this.controller)));
-    this.router.put("/:id", this.wrapAsync(this.controller.update.bind(this.controller)));
-    this.router.delete("/:id", this.wrapAsync(this.controller.delete.bind(this.controller)));
-    this.router.delete("/", this.wrapAsync(this.controller.deleteAll.bind(this.controller)));
-    
+    this.router.post('/', [verifyToken, isAdmin], this.wrapAsync(this.controller.create.bind(this.controller)));
+    this.router.get('/published', verifyToken, this.wrapAsync(this.controller.findAllPublished.bind(this.controller)));
+    this.router.get('/:id', verifyToken, this.wrapAsync(this.controller.findOne.bind(this.controller)));
+    this.router.get('/', verifyToken, this.wrapAsync(this.controller.findAll.bind(this.controller)));
+    this.router.put('/:id', verifyToken, this.wrapAsync(this.controller.update.bind(this.controller)));
+    this.router.delete('/:id', verifyToken, this.wrapAsync(this.controller.delete.bind(this.controller)));
+    this.router.delete('/', [verifyToken, isAdmin], this.wrapAsync(this.controller.deleteAll.bind(this.controller)));
   }
 
-  // Middleware để xử lý lỗi async (nếu controller trả về lỗi)
-  private wrapAsync(fn: Function) {
-    return (req: any, res: any, next: any) => {
+  private wrapAsync(fn: (req: Request, res: Response, next?: NextFunction) => Promise<void | Response>) {
+    return (req: Request, res: Response, next: NextFunction) => {
       Promise.resolve(fn(req, res, next)).catch(next);
     };
   }
