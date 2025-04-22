@@ -6,7 +6,11 @@ const secret = 'your-secret-key';
 
 // Định nghĩa kiểu RequestHandler rõ ràng
 export const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const token = req.headers['x-access-token'] as string;
+  //Token
+  //const token = req.headers['x-access-token'] as string;
+  //Bearer token
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
   if (!token) {
     res.status(403).json({ message: 'No token provided!' });
