@@ -1,5 +1,5 @@
-// src/models/user.model.ts
-import { Model, Table, Column, DataType } from 'sequelize-typescript';
+import { Model, Table, Column, DataType, HasMany } from 'sequelize-typescript';
+import Tutorial from './tutorial.model';
 
 @Table({
   tableName: 'users',
@@ -25,6 +25,17 @@ export default class User extends Model {
   @Column({
     type: DataType.STRING(255),
     allowNull: false,
+    unique: true,
+    field: 'email',
+    validate: {
+      isEmail: true, // Sequelize tự động kiểm tra định dạng email
+    },
+  })
+  email?: string;
+
+  @Column({
+    type: DataType.STRING(255),
+    allowNull: false,
     field: 'password',
   })
   password?: string;
@@ -36,4 +47,7 @@ export default class User extends Model {
     field: 'role',
   })
   role?: 'admin' | 'user';
+
+  @HasMany(() => Tutorial)
+  tutorials?: Tutorial[];
 }

@@ -14,6 +14,7 @@ class TutorialRoutes {
 
   private initializeRoutes() {
     this.router.post('/', [verifyToken, isAdmin], this.wrapAsync(this.controller.create.bind(this.controller)));
+    this.router.get('/user', verifyToken, this.wrapAsync(this.controller.findByUser.bind(this.controller)));
     this.router.get('/published', verifyToken, this.wrapAsync(this.controller.findAllPublished.bind(this.controller)));
     this.router.get('/:id', verifyToken, this.wrapAsync(this.controller.findOne.bind(this.controller)));
     this.router.get('/', verifyToken, this.wrapAsync(this.controller.findAll.bind(this.controller)));

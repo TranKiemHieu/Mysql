@@ -22,7 +22,8 @@ class TutorialRepository {
                 return yield tutorial_model_1.default.create({
                     title: tutorial.title,
                     description: tutorial.description,
-                    published: tutorial.published
+                    published: tutorial.published,
+                    userid: tutorial.userid,
                 });
             }
             catch (err) {
@@ -54,6 +55,16 @@ class TutorialRepository {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 return yield tutorial_model_1.default.findByPk(tutorialId);
+            }
+            catch (error) {
+                throw new Error("Failed to retrieve Tutorials!");
+            }
+        });
+    }
+    retrieveByUserId(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                return yield tutorial_model_1.default.findAll({ where: { userid: userId } });
             }
             catch (error) {
                 throw new Error("Failed to retrieve Tutorials!");

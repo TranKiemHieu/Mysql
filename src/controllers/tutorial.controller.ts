@@ -8,11 +8,20 @@ export default class TutorialController {
     try {
       const { title, description, published } = req.body;
 
+      if (!title || !description) {
+        return res.status(400).json({ message: 'Title and description are required' });
+      }
+
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
       // Tạo mới tutorial bằng repository
       const newTutorial = await Tutorial.create({
         title,
         description,
-        published
+        published,
+        userid: req.user.id,
       });
 
       res.status(201).json({
@@ -23,6 +32,26 @@ export default class TutorialController {
       console.error(err);
       res.status(500).json({
         message: "Internal Server Error!"
+      });
+    }
+  }
+
+  async findByUser(req: Request, res: Response) {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      const tutorials = await tutorialRepository.retrieveByUserId(req.user.id);
+
+      res.status(200).json({
+        message: 'Tutorials retrieved successfully',
+        tutorials,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        message: 'Internal Server Error!',
       });
     }
   }

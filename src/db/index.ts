@@ -29,7 +29,7 @@ class Database {
 
     //
     await this.sequelize
-      .sync({ force: false })
+      .sync({ force: true })
       .then(() => {
         console.log("Connection has been established successfully.");
       })

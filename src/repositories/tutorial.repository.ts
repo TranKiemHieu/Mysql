@@ -5,6 +5,7 @@ interface ITutorialRepository {
   save(tutorial: Tutorial): Promise<Tutorial>;
   retrieveAll(searchParams: {title: string, published: boolean}): Promise<Tutorial[]>;
   retrieveById(tutorialId: number): Promise<Tutorial | null>;
+  retrieveByUserId(userId: number): Promise<Tutorial[]>;
   update(tutorial: Tutorial): Promise<number>;
   delete(tutorialId: number): Promise<number>;
   deleteAll(): Promise<number>;
@@ -17,7 +18,8 @@ class TutorialRepository implements ITutorialRepository {
             return await Tutorial.create({
                 title: tutorial.title,
                 description: tutorial.description,
-                published: tutorial.published
+                published: tutorial.published,
+                userid: tutorial.userid,
             });
         } catch (err) {
             throw new Error("Failed to create Tutorial!");
@@ -48,6 +50,14 @@ class TutorialRepository implements ITutorialRepository {
     async retrieveById(tutorialId: number): Promise<Tutorial | null> { 
         try {
             return await Tutorial.findByPk(tutorialId);
+        } catch (error) {
+            throw new Error("Failed to retrieve Tutorials!");
+        }
+    }
+
+    async retrieveByUserId(userId: number): Promise<Tutorial[]> { 
+        try {
+            return await Tutorial.findAll({ where: { userid: userId }});
         } catch (error) {
             throw new Error("Failed to retrieve Tutorials!");
         }

@@ -8,8 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
+const user_model_1 = __importDefault(require("./user.model"));
 let Tutorial = class Tutorial extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -42,6 +46,19 @@ __decorate([
     }),
     __metadata("design:type", Boolean)
 ], Tutorial.prototype, "published", void 0);
+__decorate([
+    (0, sequelize_typescript_1.ForeignKey)(() => user_model_1.default),
+    (0, sequelize_typescript_1.Column)({
+        type: sequelize_typescript_1.DataType.INTEGER,
+        allowNull: false,
+        field: 'userid',
+    }),
+    __metadata("design:type", Number)
+], Tutorial.prototype, "userid", void 0);
+__decorate([
+    (0, sequelize_typescript_1.BelongsTo)(() => user_model_1.default),
+    __metadata("design:type", user_model_1.default)
+], Tutorial.prototype, "user", void 0);
 Tutorial = __decorate([
     (0, sequelize_typescript_1.Table)({
         tableName: "tutorials",
