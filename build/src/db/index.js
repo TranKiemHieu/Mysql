@@ -39,7 +39,7 @@ class Database {
             });
             //
             yield this.sequelize
-                .sync({ force: true })
+                .sync({ force: false })
                 .then(() => {
                 console.log("Connection has been established successfully.");
             })

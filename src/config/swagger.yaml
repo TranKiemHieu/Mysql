@@ -1,0 +1,572 @@
+openapi: 3.0.4
+info:
+  title: Tutorial API
+  description: API for managing users and tutorials with authentication using Bearer Token.
+  version: 1.0.12
+servers:
+  - url: https://localhost:8080/api
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Register a new user
+      operationId: regisUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin1
+                email:
+                  type: string
+                  format: email
+                  example: admin1@gmail.com
+                password:
+                  type: string
+                  example: KiemHieu12@
+                  description: Must be at least 8 characters, include uppercase, lowercase, number, and special character
+                role:
+                  type: string
+                  enum: [admin, user]
+                  example: admin
+        required: true
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User was registered successfully!
+        "400":
+          description: Invalid input (missing fields, invalid email, weak password)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Username or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Username or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /auth/signin:
+    post:
+      tags:
+        - Authentication
+      summary: Sign in a user
+      description: Sign in a user
+      operationId: signUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: admin1
+                password:
+                  type: string
+                  example: Kiemhieu12@
+      responses:
+        "200":
+          description: Sign in successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: admin1
+                  email:
+                    type: string
+                    example: admin1@gmail.com
+                  role:
+                    type: string
+                    example: admin
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ1NjAyODU3LCJleHAiOjE3NDU2ODkyNTd9.mlBybSCveedGND8CCkLObVofPGVXaxvAIPxuuUUZTWE
+        "400":
+          description: Missing username or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Invalid password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Email not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tutorials:
+    post:
+      tags:
+        - Tutorials
+      summary: Create a new tutorial
+      description: Create a new tutorial
+      operationId: createTutorial
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  example: Tutorial 1
+                description:
+                  type: string
+                  example: Description
+                published:
+                  type: boolean
+                  example: true
+      responses:
+        "201":
+          description: Tutorial created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutorial created successfully
+                  tutorial:
+                    $ref: "#/components/schemas/Tutorial"
+        "400":
+          description: Missing title or description
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Require Admin Role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - Tutorials
+      summary: Retrieve all tutorials
+      description: Retrieve all tutorials
+      operationId: retrieveTutorial
+      parameters:
+        - in: query
+          name: title
+          schema:
+            type: string
+          description: Filter tutorials by title (partial match)
+        - in: query
+          name: published
+          schema:
+            type: boolean
+          description: Filter tutorials by published status
+      responses:
+        "200":
+          description: Tutorials retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutorials retrieved successfully
+                  tutorials:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Tutorial"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Tutorials
+      summary: Delete all tutorials
+      description: Delete all tutorials
+      operationId: deleteTutorial
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Tutorials deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deleted 5 tutorials successfully
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Require Admin Role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tutorials/user:
+    get:
+      tags:
+        - Tutorials
+      summary: Retrieve tutorials created by the authenticated user
+      description: Retrieve tutorials created by the authenticated user
+      operationId: getTutorial
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Tutorials retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutorials retrieved successfully
+                  tutorials:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Tutorial"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tutorials/published:
+    get:
+      tags:
+        - Tutorials
+      summary: Retrieve all published tutorials
+      description: Retrieve all published tutorials
+      operationId: retrieveTutorial
+      responses:
+        "200":
+          description: Published tutorials retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Published tutorials retrieved successfully
+                  tutorials:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Tutorial"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /tutorials/{id}:
+    get:
+      tags:
+        - Tutorials
+      summary: Retrieve a tutorial by ID
+      description: Retrieve a tutorial by ID
+      operationId: retrieveTutorialID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Tutorial ID
+      responses:
+        "200":
+          description: Tutorial retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutorial retrieved successfully
+                  tutorial:
+                    $ref: "#/components/schemas/Tutorial"
+        "404":
+          description: Tutorial not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Tutorials
+      summary: Update a tutorial by ID
+      description: Update a tutorial by ID
+      operationId: updateTutorial
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Tutorial ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Updated Tutorial
+                description:
+                  type: string
+                  example: Updated Description
+                published:
+                  type: boolean
+                  example: false
+      responses:
+        "200":
+          description: Tutorial updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutorial updated successfully
+                  id:
+                    type: integer
+                    example: 1
+                  updatedFields:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        example: Updated Tutorial
+                      description:
+                        type: string
+                        example: Updated Description
+                      published:
+                        type: boolean
+                        example: false
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Require Admin Role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Tutorial not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Tutorials
+      summary: Delete a tutorial by ID
+      description: Delete a tutorial by ID
+      operationId: deleteTutorial
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Tutorial ID
+      responses:
+        "200":
+          description: Tutorial deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tutorial deleted successfully
+                  id:
+                    type: integer
+                    example: 1
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: Require Admin Role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Tutorial not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          example: admin1
+        email:
+          type: string
+          example: admin1@gmail.com
+        password:
+          type: string
+          format: password
+          example: KiemHieu12@
+        role:
+          type: string
+          enum: [admin, user]
+          example: admin
+    Tutorial:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Tutorial 1
+        description:
+          type: string
+          example: Description
+        published:
+          type: boolean
+          example: true
+        userid:
+          type: integer
+          example: 1
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
