@@ -36,6 +36,7 @@ export default class TutorialController {
     }
   }
 
+  //Tìm kiếm tutorial do user tạo ra
   async findByUser(req: Request, res: Response) {
     try {
       if (!req.user || !req.user.id) {
