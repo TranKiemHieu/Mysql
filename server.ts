@@ -17,9 +17,7 @@ const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 const swaggerDocument = yaml.load(fs.readFileSync('./swagger.yaml', 'utf8')) as any;
 
 app.use(cors({
-  origin: [
-    'http://localhost:8080',
-  ],
+  origin: ['http://localhost:8080', 'https://editor.swagger.io'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -32,7 +30,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 new setupRoutes(app);
 
 app
-  .listen(PORT, "localhost", function () {
+  .listen(PORT, "0.0.0.0", function () {
     console.log(`Server is running on port ${PORT}.`);
   })
   .on("error", (err: any) => {
