@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/user.model';
 
-const secret = 'your-secret-key';
+const secret = process.env.JWT_SECRET || 'your-secret-key';
 
 // Định nghĩa kiểu RequestHandler rõ ràng
 export const verifyToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

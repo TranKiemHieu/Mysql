@@ -3,21 +3,18 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+        PORT: ${PORT}
     ports:
-      - "8080:8080"
+      - "${PORT}:${PORT}"
+    # check dp first and then run app
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - ./:/app
       - /app/node_modules
-    environment:
-      - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=1234
-      - DB_NAME=testdb
-      - JWT_SECRET=your-secret-key
-      - PORT=8080
     env_file:
       - .env
   db:
@@ -25,8 +22,8 @@ services:
     volumes:
       - db-data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]

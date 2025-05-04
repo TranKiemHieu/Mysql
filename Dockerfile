@@ -1,4 +1,5 @@
-FROM node:18-alpine
+ARG NODE_VERSION
+FROM node:${NODE_VERSION}-alpine
 
 WORKDIR /app
 
@@ -10,6 +11,7 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 8080
+ARG APORT
+EXPOSE ${PORT}
 
 CMD ["npm", "run", "start"]

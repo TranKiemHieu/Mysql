@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
 
-const secret = 'your-secret-key';
+const secret = process.env.JWT_SECRET || 'your-secret-key';
 
 // Hàm kiểm tra mật khẩu mạnh
 const isStrongPassword = (password: string): boolean => {
