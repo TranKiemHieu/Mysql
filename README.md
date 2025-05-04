@@ -13,6 +13,11 @@ REST API for managing tutorials with user authentication using JWT.
 - Sequelize, MySQL
 - Swagger, JWT
 
+## Prerequisites
+- **Node.js**: v18 or higher (if not using Docker).
+- **MySQL**: v8.0 or higher (if not using Docker).
+- **Docker**: For containerized setup.
+
 ## Installation
 1. Clone: `git clone https://github.com/TranKiemHieu/Mysql.git`
 2. Install: `npm install`
@@ -28,6 +33,30 @@ REST API for managing tutorials with user authentication using JWT.
 4. Create DB: `CREATE DATABASE testdb;`
 5. Build: `npm run build`
 6. Run: `npm run start`
+
+## Installation (With Docker)
+1. Clone: `git clone https://github.com/TranKiemHieu/Mysql.git`
+2. Ensure Docker and Docker Compose are installed.
+3. Build and run:
+   ```
+   docker-compose up --build
+   ```
+4. Access the app:
+   - API: `http://localhost:8080`
+   - Swagger UI: `http://localhost:8080/api-docs`
+   - MySQL: `localhost:3306` (user: root, password: 1234)
+
+## Run with Docker
+### # Run in Docker
+docker-compose up
+### # use -d flag to run in background
+docker-compose up -d
+### # Tear down
+docker-compose down
+### # To be able to edit files, add volume to compose file
+volumes: ['.:/app']
+### # To re-build
+docker-compose --build
 
 ## API Docs
 - Swagger UI: `http://localhost:8080/api-docs`
@@ -51,6 +80,7 @@ REST API for managing tutorials with user authentication using JWT.
 
 ## Notes
 
+- Secure `JWT_SECRET` in `.env`.
 - Configure CORS for production.
 
 ## License
