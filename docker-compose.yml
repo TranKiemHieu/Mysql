@@ -8,7 +8,7 @@ services:
         PORT: ${PORT}
     ports:
       - "${PORT}:${PORT}"
-    # check dp first and then run app
+    # check db first and then run app
     depends_on:
       db:
         condition: service_healthy
