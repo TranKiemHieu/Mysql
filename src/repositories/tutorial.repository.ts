@@ -1,19 +1,55 @@
 import Tutorial from "../models/tutorial.model";
 import { Op } from "sequelize";
 
-interface ITutorialRepository {
-  save(tutorial: Tutorial): Promise<Tutorial>;
-  retrieveAll(searchParams: {title: string, published: boolean}): Promise<Tutorial[]>;
-  retrieveById(tutorialId: number): Promise<Tutorial | null>;
-  retrieveByUserId(userId: number): Promise<Tutorial[]>;
-  update(tutorial: Tutorial): Promise<number>;
-  delete(tutorialId: number): Promise<number>;
-  deleteAll(): Promise<number>;
+interface ITutorialQueryResult {
+    tutorials: Tutorial[];
+    totalCount: number;
 }
 
+interface IUserQueryResult {
+    tutorials: Tutorial[];
+    totalCount: number;
+}
+
+interface ITutorialQueryParameters {
+    limit?: number;
+    offset?: number;
+    userId?: number;
+}
+
+interface IUserQueryParameters {
+    userId?: number;
+    limit?: number;
+    offset?: number;
+}
+
+interface IPublishedQueryParameters {
+    published?: boolean;
+    limit?: number;
+    offset?: number;
+}
+
+
+interface ITutorialRepository {
+    save(tutorial: Partial<Tutorial>): Promise<Tutorial>;
+    retrieveAll(query: IPublishedQueryParameters, searchParams: { title: string, published: boolean }): Promise<ITutorialQueryResult>;
+    retrieveById(tutorialId: number): Promise<Tutorial | null>;
+    retrieveByUserId(query: IUserQueryParameters, userId: number): Promise<IUserQueryResult>;
+    update(tutorial: Tutorial): Promise<number>;
+    delete(tutorialId: number): Promise<number>;
+    deleteAll(): Promise<number>;
+    listPaginated(query: ITutorialQueryParameters, userId?: number): Promise<ITutorialQueryResult>;
+    //listPaginatedPublished(query: ITutorialQueryParameters): Promise<ITutorialQueryResult>;
+    //listUserPaginated(query: ITutorialQueryParameters, userId?: number): Promise<IUserQueryResult>;
+}
+
+
 class TutorialRepository implements ITutorialRepository {
+    private defaultLimit = 10;
+    private defaultOffset = 0;
+
     //create new object
-    async save(tutorial: Tutorial): Promise<Tutorial> {
+    async save(tutorial: Partial<Tutorial>): Promise<Tutorial> {
         try {
             return await Tutorial.create({
                 title: tutorial.title,
@@ -27,27 +63,40 @@ class TutorialRepository implements ITutorialRepository {
     }
 
     //Retrieve objects (with conditions)
-    async retrieveAll(searchParams: {title?: string, published?: boolean}): Promise<Tutorial[]> {
+    async retrieveAll(query: IPublishedQueryParameters, searchParams: { title?: string, published?: boolean }): Promise<ITutorialQueryResult> {
         try {
             //let condition: SearchCondition = {};
-            let condition: { [key: string]: any } = {};
-        
+            let where: { [key: string]: any } = {};
+
             //if (searchParams?.published) condition.published = true;
 
             if (typeof searchParams.published === "boolean") {
-                condition.published = searchParams.published;
-              }
+                where.published = searchParams.published;
+            }
             if (searchParams?.title)
-              condition.title = { [Op.like]: `%${searchParams.title}%` };
-        
-            return await Tutorial.findAll({ where: condition });
+                where.title = { [Op.like]: `%${searchParams.title}%` };
+
+            const [tutorials, totalCount] = await Promise.all([
+                Tutorial.findAll({
+                    where,
+                    limit: query.limit || this.defaultLimit,
+                    offset: query.offset || this.defaultOffset,
+                }),
+                Tutorial.count({ where }),
+            ]);
+
+            return {
+                tutorials: tutorials,
+                totalCount: totalCount,
+            };
+
         } catch (error) {
             throw new Error("Failed to retrieve Tutorials!");
         }
     }
 
     //Retrieve object by Id
-    async retrieveById(tutorialId: number): Promise<Tutorial | null> { 
+    async retrieveById(tutorialId: number): Promise<Tutorial | null> {
         try {
             return await Tutorial.findByPk(tutorialId);
         } catch (error) {
@@ -55,9 +104,23 @@ class TutorialRepository implements ITutorialRepository {
         }
     }
 
-    async retrieveByUserId(userId: number): Promise<Tutorial[]> { 
+    async retrieveByUserId(query: IUserQueryParameters, userId: number): Promise<IUserQueryResult> {
         try {
-            return await Tutorial.findAll({ where: { userid: userId }});
+            const where = { userid: userId };
+
+            const [tutorials, totalCount] = await Promise.all([
+                Tutorial.findAll({
+                    where,
+                    limit: query.limit || this.defaultLimit,
+                    offset: query.offset || this.defaultOffset,
+                }),
+                Tutorial.count({ where }),
+            ]);
+
+            return {
+                tutorials: tutorials,
+                totalCount: totalCount,
+            };
         } catch (error) {
             throw new Error("Failed to retrieve Tutorials!");
         }
@@ -69,8 +132,8 @@ class TutorialRepository implements ITutorialRepository {
 
         try {
             const affectedRows = await Tutorial.update(
-            { title, description, published },
-            { where: { id: id } }
+                { title, description, published },
+                { where: { id: id } }
             );
 
             return affectedRows[0];
@@ -80,10 +143,10 @@ class TutorialRepository implements ITutorialRepository {
     }
 
     //Delete an object
-    async delete(tutorialId: number): Promise<number> { 
+    async delete(tutorialId: number): Promise<number> {
         try {
             const affectedRows = await Tutorial.destroy({ where: { id: tutorialId } });
-        
+
             return affectedRows;
         } catch (error) {
             throw new Error("Failed to delete Tutorial!");
@@ -91,14 +154,41 @@ class TutorialRepository implements ITutorialRepository {
     }
 
     //Delete all objects
-    async deleteAll(): Promise<number> { 
+    async deleteAll(): Promise<number> {
         try {
             return Tutorial.destroy({
-              where: {},
-              truncate: false
+                where: {},
+                truncate: false
             });
         } catch (error) {
             throw new Error("Failed to delete Tutorials!");
+        }
+    }
+
+    async listPaginated(query: ITutorialQueryParameters, userId?: number): Promise<ITutorialQueryResult> {
+        try {
+            const where: { [key: string]: any } = {};
+
+            // Chỉ thêm điều kiện userid nếu userId được cung cấp
+            if (userId !== undefined) {
+                where.userid = userId;
+            }
+
+            const [tutorials, totalCount] = await Promise.all([
+                Tutorial.findAll({
+                    where,
+                    limit: query.limit || this.defaultLimit,
+                    offset: query.offset || this.defaultOffset,
+                }),
+                Tutorial.count({ where }),
+            ]);
+
+            return {
+                tutorials: tutorials,
+                totalCount: totalCount,
+            };
+        } catch (error) {
+            throw new Error("Failed to retrieve paginated Tutorials!");
         }
     }
 }

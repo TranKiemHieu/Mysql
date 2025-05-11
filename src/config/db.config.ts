@@ -8,7 +8,8 @@ export const config = {
     min: 0,
     acquire: 30000,
     idle: 10000
-  }
+  },
+  defaultPageSize: parseInt(process.env.DEFAULT_PAGE_SIZE || "5"),
 };
 
 export const dialect = "mysql";
