@@ -31,6 +31,12 @@ export default class Tutorial extends Model {
   })
   published?: boolean;
 
+  @Column({
+    type: DataType.INTEGER,
+    field: "price"
+  })
+  price?: number;
+
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,

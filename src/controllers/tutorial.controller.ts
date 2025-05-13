@@ -7,7 +7,7 @@ export default class TutorialController {
   // Tạo mới một tutorial
   async create(req: Request, res: Response) {
     try {
-      const { title, description, published } = req.body;
+      const { title, description, published, price } = req.body;
 
       if (!title || !description) {
         return res.status(400).json({ message: 'Title and description are required' });
@@ -22,6 +22,7 @@ export default class TutorialController {
         title,
         description,
         published: published ?? false,
+        price,
         userid: req.user.id,
       });
 
@@ -86,6 +87,10 @@ export default class TutorialController {
       const page = parseInt(req.query.page as string, 10);
       const perPage = parseInt(req.query.perPage as string, 10);
       const userId = req.query.userId;
+      const createdFrom = req.query.createdFrom as string;
+      const createdTo = req.query.createdTo as string;
+      const priceFrom = Number(req.query.priceFrom);
+      const priceTo = Number(req.query.priceTo);
 
       const validPage = isNaN(page) || page < 1 ? 1 : page;
       const validPerPage = isNaN(perPage) || perPage < 1 ? config.defaultPageSize : perPage;
@@ -97,6 +102,10 @@ export default class TutorialController {
         limit,
         offset,
         userId: userId ? parseInt(userId as string, 10) : undefined,
+        createdFrom,
+        createdTo,
+        priceFrom,
+        priceTo,
       });
 
       res.status(200).json({
@@ -222,7 +231,10 @@ export default class TutorialController {
 
       const page = parseInt(req.query.page as string, 10);
       const perPage = parseInt(req.query.perPage as string, 10);
-      const title = req.query.title;
+      const createdFrom = req.query.createdFrom as string;
+      const createdTo = req.query.createdTo as string;
+      const priceFrom = Number(req.query.priceFrom);
+      const priceTo = Number(req.query.priceTo);
 
       const validPage = isNaN(page) || page < 1 ? 1 : page;
       const validPerPage = isNaN(perPage) || perPage < 1 ? config.defaultPageSize : perPage;
@@ -234,6 +246,10 @@ export default class TutorialController {
       const result = await tutorialRepository.retrieveAll({
         limit,
         offset,
+        createdFrom,
+        createdTo,
+        priceFrom,
+        priceTo
       }, { published: true });
 
       res.status(200).json({
@@ -242,7 +258,7 @@ export default class TutorialController {
         page: validPage,
         per_Page: validPerPage,
         total_Count: result.totalCount,
-        total_Pages: Math.ceil(result.totalCount / perPage),
+        total_Pages: Math.ceil(result.totalCount / perPage) || 1,
       });
     } catch (err) {
       console.error(err);

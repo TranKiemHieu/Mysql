@@ -15,6 +15,10 @@ interface ITutorialQueryParameters {
     limit?: number;
     offset?: number;
     userId?: number;
+    priceFrom?: number;
+    priceTo?: number;
+    createdFrom?: string;
+    createdTo?: string;
 }
 
 interface IUserQueryParameters {
@@ -27,6 +31,10 @@ interface IPublishedQueryParameters {
     published?: boolean;
     limit?: number;
     offset?: number;
+    priceFrom?: number;
+    priceTo?: number;
+    createdFrom?: string;
+    createdTo?: string;
 }
 
 
@@ -55,6 +63,7 @@ class TutorialRepository implements ITutorialRepository {
                 title: tutorial.title,
                 description: tutorial.description,
                 published: tutorial.published,
+                price: tutorial.price,
                 userid: tutorial.userid,
             });
         } catch (err) {
@@ -75,6 +84,26 @@ class TutorialRepository implements ITutorialRepository {
             }
             if (searchParams?.title)
                 where.title = { [Op.like]: `%${searchParams.title}%` };
+
+            if (query.createdFrom || query.createdTo) {
+                where.createdAt = {};
+                if (query.createdFrom) {
+                    where.createdAt[Op.gte] = new Date(query.createdFrom);
+                }
+                if (query.createdTo) {
+                    where.createdAt[Op.lte] = new Date(query.createdTo);
+                }
+            }
+
+            if (query.priceFrom !== undefined || query.priceTo !== undefined) {
+                where.price = {};
+                if (query.priceFrom) {
+                    where.price[Op.gte] = Number(query.priceFrom);
+                }
+                if (query.priceTo) {
+                    where.price[Op.lte] = Number(query.priceTo);
+                }
+            }
 
             const [tutorials, totalCount] = await Promise.all([
                 Tutorial.findAll({
@@ -172,6 +201,26 @@ class TutorialRepository implements ITutorialRepository {
             // Chỉ thêm điều kiện userid nếu userId được cung cấp
             if (userId !== undefined) {
                 where.userid = userId;
+            }
+
+            if (query.createdFrom || query.createdTo) {
+                where.createdAt = {};
+                if (query.createdFrom) {
+                    where.createdAt[Op.gte] = new Date(query.createdFrom);
+                }
+                if (query.createdTo) {
+                    where.createdAt[Op.lte] = new Date(query.createdTo);
+                }
+            }
+
+            if (query.priceFrom || query.priceTo) {
+                where.price = {};
+                if (query.priceFrom) {
+                    where.price[Op.gte] = query.priceFrom;
+                }
+                if (query.priceTo) {
+                    where.price[Op.lte] = query.priceTo;
+                }
             }
 
             const [tutorials, totalCount] = await Promise.all([
