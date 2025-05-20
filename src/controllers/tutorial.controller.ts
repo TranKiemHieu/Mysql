@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import Tutorial from "../models/tutorial.model";
+import Tutorial from "../database/models/tutorial.model";
 import tutorialRepository from "../repositories/tutorial.repository";
-import { config } from "../config/db.config";
+import config from "../database/config/database";
 
 export default class TutorialController {
   // Tạo mới một tutorial

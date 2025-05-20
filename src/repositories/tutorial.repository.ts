@@ -1,4 +1,4 @@
-import Tutorial from "../models/tutorial.model";
+import Tutorial from "../database/models/tutorial.model";
 import { Op } from "sequelize";
 
 interface ITutorialQueryResult {
@@ -95,7 +95,10 @@ class TutorialRepository implements ITutorialRepository {
                 }
             }
 
-            if (query.priceFrom !== undefined || query.priceTo !== undefined) {
+            const priceFrom = Number(query.priceFrom);
+            const priceTo = Number(query.priceTo);
+
+            if (!isNaN(priceFrom) || !isNaN(priceTo)) {
                 where.price = {};
                 if (query.priceFrom) {
                     where.price[Op.gte] = Number(query.priceFrom);

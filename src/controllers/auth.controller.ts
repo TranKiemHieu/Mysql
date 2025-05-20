@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/user.model';
+import User from '../database/models/user.model';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
@@ -20,7 +20,7 @@ const isStrongPassword = (password: string): boolean => {
 
 export const signup = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   try {
-    const {username, email, password, role } = req.body;
+    const { username, email, password, role } = req.body;
 
     //Kiểm tra email và pass
     if (!email || !password) {
@@ -29,23 +29,24 @@ export const signup = async (req: Request, res: Response, _next: NextFunction): 
     }
 
     //Check email
-    if (!validator.isEmail(email)){
-      res.status(400).json({ message: 'Invalid email format'});
+    if (!validator.isEmail(email)) {
+      res.status(400).json({ message: 'Invalid email format' });
       return;
     }
 
     //Check pass
-    if (!isStrongPassword(password)){
-      res.status(400).json({ message: 
-        'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character'
+    if (!isStrongPassword(password)) {
+      res.status(400).json({
+        message:
+          'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character'
       });
       return;
     }
 
     //Check email exist
-    const existUser = await User.findOne({ where: {email} });
-    if(existUser){
-      res.status(409).json({ message: 'Email already exists'});
+    const existUser = await User.findOne({ where: { email } });
+    if (existUser) {
+      res.status(409).json({ message: 'Email already exists' });
       return;
     }
 
