@@ -1,7 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
-import { config, dialect } from "../config/db.config";
-import Tutorial from "../models/tutorial.model";
-import User from '../models/user.model';
+import config from '../database/config/database';
+import { dialect } from '../database/config/database';
+import Tutorial from "../database/models/tutorial.model";
+import User from '../database/models/user.model';
 
 class Database {
   public sequelize: Sequelize | undefined;
@@ -12,10 +13,10 @@ class Database {
 
   private async connectToDatabase() {
     this.sequelize = new Sequelize({
-      database: config.DB,
-      username: config.USER,
-      password: config.PASSWORD,
-      host: config.HOST,
+      database: config.database,
+      username: config.username,
+      password: config.password,
+      host: config.host,
       dialect: dialect,
       pool: {
         max: config.pool.max,
