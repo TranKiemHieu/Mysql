@@ -7,11 +7,13 @@ import swaggerUi from 'swagger-ui-express';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 import dotenv from 'dotenv';
+dotenv.config();
+
 import session from 'express-session';
 import passport from 'passport';
 import './src/strategies/oauth-strategy';
 
-dotenv.config();
+
 
 const db = new Database();
 const app: Application = express();
