@@ -112,3 +112,36 @@ export const signin = async (req: Request, res: Response, _next: NextFunction): 
     res.status(500).json({ message: error.message || 'Some error occurred while signing in.' });
   }
 };
+
+// export const getAuthStatus = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+//   try {
+//     console.log(`Inside Serialize User`);
+//     console.log(req.user);
+//     console.log(req.session);
+//     console.log(req.sessionID);
+//     if (req.user) {
+//       res.status(200).json(req.user);
+//     } else {
+//       res.status(401).json({ message: 'Unauthorized' });
+//     }
+//   } catch (err: unknown) {
+//     const error = err as Error;
+//     res.status(500).json({ message: error.message || 'Some error occurred while checking auth status.' });
+//   }
+// };
+
+export const getAuthStatus = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+  console.log('User:', req.user);
+  console.log('Session:', req.session);
+  if (req.user) {
+    res.status(200).json({
+      success: true,
+      message: 'Người dùng đã xác thực',
+      user: req.user,
+    });
+  }
+  res.status(401).json({
+    success: false,
+    message: 'Người dùng chưa xác thực',
+  });
+};

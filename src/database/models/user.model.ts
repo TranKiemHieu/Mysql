@@ -35,10 +35,18 @@ export default class User extends Model {
 
     @Column({
         type: DataType.STRING(255),
-        allowNull: false,
+        allowNull: true,
         field: 'password',
     })
     password?: string;
+
+    @Column({
+        type: DataType.STRING(255),
+        allowNull: true,
+        unique: true,
+        field: 'google_id',
+    })
+    google_id?: string;
 
     @Column({
         type: DataType.ENUM('admin', 'user'),

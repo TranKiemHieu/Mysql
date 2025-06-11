@@ -10,7 +10,8 @@ export default class Server {
 
   private config(app: Application): void {
     const corsOptions: CorsOptions = {
-      origin: "http://localhost:8081"
+      origin: "http://localhost:8081",
+      credentials: true,
     };
 
     app.use(cors(corsOptions));
@@ -18,3 +19,5 @@ export default class Server {
     app.use(express.urlencoded({ extended: true }));
   }
 }
+
+//khi gọi server, nó lập tức cấu hình middleware (cors, json body, urlencoded) → gọi this.config(app)
