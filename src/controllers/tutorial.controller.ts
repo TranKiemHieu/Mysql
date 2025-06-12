@@ -154,11 +154,11 @@ export default class TutorialController {
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const { title, description, published } = req.body;
+      const { title, description, published, price } = req.body;
 
       // Dùng Sequelize Model để update
       const [updatedRows] = await Tutorial.update(
-        { title, description, published },
+        { title, description, published, price },
         { where: { id: Number(id) } }
       );
 

@@ -1,4 +1,22 @@
 services:
+  db:
+    image: mysql:8.0
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    mem_limit: 512m
+    ports:
+      - "3307:3306"  # Expose ra ngoài host tại cổng 3307
+    networks:
+      - app-network
   app: #network
     build:
       context: .
@@ -7,8 +25,7 @@ services:
         NODE_VERSION: ${NODE_VERSION}
         PORT: ${PORT}
     ports:
-      - "${PORT}:${PORT}"
-    # check db first and then run app
+      - "8081:${PORT}"
     depends_on:
       db:
         condition: service_healthy
@@ -17,18 +34,66 @@ services:
       - /app/node_modules
     env_file:
       - .env
-  db:
-    image: mysql:8.0
+    image: app
+    container_name: app
+    restart: unless-stopped
+    networks:
+      - app-network
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - db-data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
-    
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    depends_on:
+      - app
+    networks:
+      - app-network
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - webserver
+    command: certonly --webroot --webroot-path=/var/www/html --email tkiemhieu@gmail.com --agree-tos --no-eff-email -d api.dimori.net
+
 volumes:
   db-data:
+  certbot-etc:
+    driver: local
+    driver_opts:
+      type: none
+      device: /etc/letsencrypt
+      o: bind
+  certbot-var:
+    driver: local
+    driver_opts:
+      type: none
+      device: /var/lib/letsencrypt
+      o: bind
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/app/Mysql/src/
+      o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/app/Mysql/dhparam/
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge

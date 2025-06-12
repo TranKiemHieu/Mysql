@@ -4,7 +4,7 @@ const config: Options & { defaultPageSize: number; pool: NonNullable<Options["po
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '1234',
     database: process.env.DB_NAME || 'testdb',
-    host: process.env.DB_HOST || '127.0.0.1',
+    host: process.env.DB_HOST || 'localhost',
     dialect: 'mysql',
     pool: {
         max: 5,

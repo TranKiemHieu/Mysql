@@ -4,7 +4,7 @@ info:
   description: API for managing users and tutorials with authentication using Bearer Token.
   version: 1.0.12
 servers:
-  - url: http://localhost:8080/api
+  - url: https://api.dimori.net/api
 paths:
   /auth/signup:
     post:
@@ -89,7 +89,7 @@ paths:
                   example: admin1@gmail.com
                 password:
                   type: string
-                  example: Kiemhieu12@
+                  example: KiemHieu12@
       responses:
         "200":
           description: Sign in successful
@@ -164,6 +164,9 @@ paths:
                 published:
                   type: boolean
                   example: true
+                price:
+                  type: integer
+                  example: 55000
       responses:
         "201":
           description: Tutorial created successfully
@@ -246,7 +249,7 @@ paths:
             type: string
 
             pattern: ^\d{4}-\d{2}-\d{2}$
-            example: 2025-05-15
+            example: 2026-05-15
           description: Date to to retrieve (must be in YYYY-MM-DD format)
         - in: query
           name: priceFrom
@@ -427,7 +430,7 @@ paths:
             type: string
 
             pattern: ^\d{4}-\d{2}-\d{2}$
-            example: 2025-05-15
+            example: 2026-05-15
           description: Date to to retrieve (must be in YYYY-MM-DD format)
         - in: query
           name: priceFrom
@@ -546,6 +549,9 @@ paths:
                 published:
                   type: boolean
                   example: false
+                price:
+                  type: integer
+                  example: 40000
       responses:
         "200":
           description: Tutorial updated successfully
@@ -572,6 +578,9 @@ paths:
                       published:
                         type: boolean
                         example: false
+                      price:
+                        type: integer
+                        example: 40000
         "401":
           description: User not authenticated
           content:
@@ -693,6 +702,9 @@ components:
         published:
           type: boolean
           example: true
+        price:
+          type: integer
+          example: 40000
         userid:
           type: integer
           example: 1

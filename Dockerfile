@@ -15,3 +15,4 @@ ARG APORT
 EXPOSE ${PORT}
 
 CMD ["npm", "run", "start"]
+

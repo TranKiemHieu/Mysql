@@ -17,7 +17,7 @@ const PORT: number = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 const swaggerDocument = yaml.load(fs.readFileSync('./swagger.yaml', 'utf8')) as any;
 
 app.use(cors({
-  origin: ['http://localhost:8080', 'https://editor.swagger.io'],
+  origin: ['https://api.dimori.net', 'https://editor.swagger.io'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));

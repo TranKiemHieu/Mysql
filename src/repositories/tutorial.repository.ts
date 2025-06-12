@@ -160,11 +160,11 @@ class TutorialRepository implements ITutorialRepository {
 
     //Update an object
     async update(tutorial: Tutorial): Promise<number> {
-        const { id, title, description, published } = tutorial;
+        const { id, title, description, published, price } = tutorial;
 
         try {
             const affectedRows = await Tutorial.update(
-                { title, description, published },
+                { title, description, published, price },
                 { where: { id: id } }
             );
 
