@@ -4,7 +4,7 @@ info:
   description: API for managing users and tutorials with authentication using Bearer Token.
   version: 1.0.12
 servers:
-  - url: http://localhost:8080/api
+  - url: https://api.dimori.net/api
 paths:
   /auth/signup:
     post:
@@ -89,7 +89,7 @@ paths:
                   example: admin1@gmail.com
                 password:
                   type: string
-                  example: Kiemhieu12@
+                  example: KiemHieu12@
       responses:
         "200":
           description: Sign in successful
@@ -551,7 +551,7 @@ paths:
                   example: false
                 price:
                   type: integer
-                  example: 55000
+                  example: 40000
       responses:
         "200":
           description: Tutorial updated successfully
@@ -578,6 +578,9 @@ paths:
                       published:
                         type: boolean
                         example: false
+                      price:
+                        type: integer
+                        example: 40000
         "401":
           description: User not authenticated
           content:
