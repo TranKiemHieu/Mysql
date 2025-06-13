@@ -1,9 +1,6 @@
 build/
 node_modules/
-<<<<<<< HEAD
 .env
-=======
-.env
-src/config/
-src/models/
->>>>>>> feat/add-migration
+dhparam/
+nginx-conf/
+
