@@ -22,7 +22,12 @@ export default {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
+      },
+      google_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
       },
       role: {
         type: DataTypes.ENUM('admin', 'user'),
@@ -32,7 +37,7 @@ export default {
     });
   },
 
-  async down(queryInterface : QueryInterface) {
+  async down(queryInterface: QueryInterface) {
     await queryInterface.dropTable('users');
   }
 };

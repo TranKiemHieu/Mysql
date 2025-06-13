@@ -3,6 +3,6 @@ export type User = {
     username: string;
     email: string;
     password: string;
+    google_id: string;
     role: 'admin' | 'user';
 }
- 

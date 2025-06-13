@@ -171,7 +171,7 @@ export default class TutorialController {
       res.status(200).json({
         message: "Tutorial updated successfully",
         id,
-        updatedFields: { title, description, published }
+        updatedFields: { title, description, published, price }
       });
     } catch (err) {
       console.error(err);
