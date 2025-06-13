@@ -1,7 +1,7 @@
 openapi: 3.0.4
 info:
   title: Tutorial API
-  description: API for managing users and tutorials with authentication using Bearer Token and use CI/CD.
+  description: API for managing users and tutorials with authentication using Bearer Token and use CI/CD part 23.
   version: 1.0.12
 servers:
   - url: https://api.dimori.net/api
