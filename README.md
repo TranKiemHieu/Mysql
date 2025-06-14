@@ -1,6 +1,6 @@
 # Tutorial API
 
-REST API for managing tutorials with user authentication using JWT.
+REST API for managing tutorials with user authentication using JWT and user CI/CD.
 
 ## Features
 - User auth (signup/signin) with JWT Bearer Token.
