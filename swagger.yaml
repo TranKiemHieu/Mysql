@@ -658,6 +658,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /user/{id}:
+    get:
+      tags:
+        - User
+      summary: Get detail user
+      description: Get detail user
+      operationId: getUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Tutorial ID
+      responses:
+        "201":
+          description: User retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User retrieved successful
+        "400":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     User:
