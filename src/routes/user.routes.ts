@@ -13,7 +13,7 @@ class UserRoutes {
     }
 
     private initializeRoutes() {
-        this.router.get('/:id', verifyToken, this.wrapAsync(this.controller.findOneUser.bind(this.controller)));
+        this.router.get('/:id', [verifyToken, isAdmin], this.wrapAsync(this.controller.findOneUser.bind(this.controller)));
     }
 
     private wrapAsync(fn: (req: Request, res: Response, next?: NextFunction) => Promise<void | Response>) {
