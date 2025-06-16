@@ -23,7 +23,8 @@ passport.use(
         {
             clientID: process.env.CLIENT_ID!,
             clientSecret: process.env.CLIENT_SECRET!,
-            callbackURL: "http://localhost:8080/api/auth/google/redirect",
+            //localhost: callbackURL: "http://localhost:8080/api/auth/google/redirect",
+            callbackURL: "http://api.dimori.net/api/auth/google/redirect",
             scope: ["profile", "email"],
         },
         async (accessToken, refreshToken, profile, done) => {
