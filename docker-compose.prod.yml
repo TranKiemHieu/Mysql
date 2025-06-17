@@ -20,6 +20,8 @@ services:
       - "3307:3306"  # Expose ra ngoài host tại cổng 3307
     networks:
       - app-network
+    env_file:
+      - .env.prod
   app:
     build:
       context: .
