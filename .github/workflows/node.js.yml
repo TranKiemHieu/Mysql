@@ -50,4 +50,4 @@ jobs:
 
       - name: Deploy to VPS and build docker image
         run: |
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /root/app/Mysql && git pull && docker compose -f docker-compose.prod.yml up --build -d"
+          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /root/app/Mysql && git pull && docker compose --env-file .env.prod -f docker-compose.prod.yml up --build -d"
