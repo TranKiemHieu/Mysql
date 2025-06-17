@@ -67,7 +67,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email tkiemhieu@gmail.com --agree-tos --no-eff-email -d api.dimori.net
+    command: certonly --webroot --webroot-path=/var/www/html --email tkiemhieu@gmail.com --agree-tos --no-eff-email -d api.dimori.net -d dev.api.dimori.net
 volumes:
   db-data:
   certbot-etc:
