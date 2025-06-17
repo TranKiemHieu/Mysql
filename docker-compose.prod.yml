@@ -6,10 +6,12 @@ services:
       - db-data:/var/lib/mysql
     #nếu volumes chưa tồn tại thì tạo database
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_USER_ROOT}
       MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p${DB_PASSWORD}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p${DB_USER_ROOT}"]
       interval: 10s
       timeout: 5s
       retries: 10
