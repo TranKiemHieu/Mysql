@@ -4,7 +4,7 @@ services:
     image: mysql:8.0
     volumes:
       - db-data:/var/lib/mysql
-    #nếu volumes chưa tồn tại
+    #nếu volumes chưa tồn tại thì tạo database
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_USER_ROOT}
       MYSQL_DATABASE: ${DB_NAME}
@@ -16,6 +16,8 @@ services:
       timeout: 5s
       retries: 10
     mem_limit: 512m
+    ports:
+      - "3307:3306"  # Expose ra ngoài host tại cổng 3307
     networks:
       - app-network
   app:
