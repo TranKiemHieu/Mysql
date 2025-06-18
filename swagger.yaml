@@ -5,6 +5,7 @@ info:
   version: 1.0.12
 servers:
   - url: https://api.dimori.net/api
+  - url: https://dev.api.dimori.net/api
 paths:
   /auth/signup:
     post:
