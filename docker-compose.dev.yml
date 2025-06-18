@@ -37,8 +37,49 @@ services:
     restart: unless-stopped
     networks:
       - app-network
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - dhparam:/etc/ssl/certs
+    depends_on:
+      - app
+    networks:
+      - app-network
 volumes:
   db-data:
+  certbot-etc:
+    driver: local
+    driver_opts:
+      type: none
+      device: /etc/letsencrypt
+      o: bind
+  certbot-var:
+    driver: local
+    driver_opts:
+      type: none
+      device: /var/lib/letsencrypt
+      o: bind
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/app/Mysql/src/
+      o: bind
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /root/app/Mysql/dhparam/
+      o: bind
 networks:
   app-network:
     driver: bridge
