@@ -51,7 +51,7 @@ jobs:
 
       - name: Deploy DEV to VPS and build docker image
         run: |
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /root/app/Mysql && git checkout development &&  git pull && docker compose down -v && docker compose --env-file .env.dev -f docker-compose.dev.yml up --build -d"
+          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /root/app/Mysql && git checkout development && git branch --set-upstream-to=origin/development development && git pull && docker compose down -v && docker compose --env-file .env.dev -f docker-compose.dev.yml up --build -d"
 
   deploy-prod:
     if: github.ref == 'refs/heads/production' || github.ref == 'refs/heads/main'
@@ -73,4 +73,4 @@ jobs:
 
       - name: Deploy PROD to VPS and build docker image
         run: |
-          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /root/app/Mysql && git checkout main &&  git pull && docker compose down -v && docker compose --env-file .env.prod -f docker-compose.prod.yml up --build -d"
+          ssh ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} "cd /root/app/Mysql && git checkout main && git branch --set-upstream-to=origin/main main && git pull && docker compose down -v && docker compose --env-file .env.prod -f docker-compose.prod.yml up --build -d"
