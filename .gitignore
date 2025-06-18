@@ -1,9 +1,5 @@
 build/
 node_modules/
-<<<<<<< HEAD
 .env
-=======
-.env
-src/config/
-src/models/
->>>>>>> feat/add-migration
+.env.dev
+.env.prod
